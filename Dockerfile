@@ -2,7 +2,7 @@
 FROM python:3.11-slim-buster
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /opt/app
 
 # Copy the requirements file into the container
 COPY requirements.txt .
