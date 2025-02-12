@@ -1,0 +1,29 @@
+kind: AIchorManifest
+apiVersion: 0.2.2
+
+builder:
+  image: huggingface-finetuning-image  # Nom de l'image Docker à construire
+  context: .  # Répertoire contenant le Dockerfile, `finetuning.py` et les données
+  dockerfile: ./Dockerfile  # Chemin vers le Dockerfile
+
+spec:
+  operator: pytorch
+  image: huggingface-finetuning-image  # Image Docker à utiliser pour l'exécution
+  command: "python3 finetuning.py"  # Exécuter votre script Python
+
+  tensorboard:
+    enabled: true  # Activer TensorBoard pour surveiller les métriques d'entraînement
+
+  types:
+    Master:
+      count: 1
+      resources:
+        cpus: 8
+        ramRatio: 4  # Allouer environ 32 Go de RAM (4x les CPU)
+        accelerators:
+          gpu:
+            count: 1
+            type: gpu
+            product: nvidia-tesla-t4
+    Worker:
+      count: 0  # Pas nécessaire si vous n'utilisez pas d'entraînement distribué
