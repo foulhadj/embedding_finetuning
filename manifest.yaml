@@ -14,20 +14,19 @@ spec:
   tensorboard:
     enabled: true  # Activer TensorBoard pour surveiller les métriques d'entraînement
 
-  spec:
-    types:
-      Master:
-        count: 1
-        resources:
-          cpus: 8
-          ramRatio: 4
-          accelerators:
-            gpu:
-              count: 1
-              type: gpu
-              product: nvidia-tesla-t4
-      Worker:
-        count: 0
-        resources:
-          cpus: 1
-          ramRatio: 1
+  types:
+    Master:
+      count: 1
+      resources:
+        cpus: 8
+        ramRatio: 4
+        accelerators:
+          gpu:
+            count: 1
+            type: gpu
+            product: nvidia-tesla-t4
+    Worker:
+      count: 0
+      resources:
+        cpus: 1
+        ramRatio: 1
