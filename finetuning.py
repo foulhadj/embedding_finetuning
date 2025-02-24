@@ -7,7 +7,7 @@ from sentence_transformers.losses import MatryoshkaLoss, MultipleNegativesRankin
 from sentence_transformers.evaluation import InformationRetrievalEvaluator
 from torch.utils.data import DataLoader
 
-# Configuration
+## Configuration
 nest_asyncio.apply()
 login(token=os.getenv('HUGGING_TOKEN'), add_to_git_credential=True)
 os.environ["WANDB_DISABLED"] = "true"
