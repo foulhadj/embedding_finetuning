@@ -7,4 +7,6 @@ numpy==1.26.4
 pandas==2.2.2
 scikit-learn==1.6.1
 tqdm==4.67.1
+wandb==0.19.6
 xformers==0.0.29.post2
+tensorflow[and-cuda]~=2.14.0
