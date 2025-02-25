@@ -15,18 +15,23 @@ spec:
     enabled: true  # Activer TensorBoard pour surveiller les métriques d'entraînement
 
   types:
+    Master:
+      count: 1
+      resources:
+        cpus: 8
+        ramRatio: 4
+        accelerators: # optional
+          gpu:
+            count: 1
+            type: gpu
+            product: NVIDIA-A100-SXM4-80GB
     Worker:
       count: 1
       resources:
-        cpus: 16
-        ramRatio: 4  # 16 * 4 = 64 Go de RAM
-        accelerators:
+        cpus: 8
+        ramRatio: 4
+        accelerators: # optional
           gpu:
-            count: 2
+            count: 1
             type: gpu
-            product: Tesla-V100-SXM3-32GB
-    # Worker:
-    #   count: 0
-    #   resources:
-    #     cpus: 1
-    #     ramRatio: 1
+            product: NVIDIA-A100-SXM4-80GB
