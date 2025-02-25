@@ -18,13 +18,13 @@ spec:
     Worker:
       count: 1
       resources:
-        cpus: 2
-        ramRatio: 16 # 32GB
-        accelerators: # optional
+        cpus: 16
+        ramRatio: 4  # 16 * 4 = 64 Go de RAM
+        accelerators:
           gpu:
-            count: 2 # note that setting more than 1 MIG device per container is useless since only one will be usable https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#cuda-device-enumeration
+            count: 2
             type: gpu
-            product: NVIDIA-A100-SXM4-40GB
+            product: Tesla-V100-SXM3-32GB
     # Worker:
     #   count: 0
     #   resources:
