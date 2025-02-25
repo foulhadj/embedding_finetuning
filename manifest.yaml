@@ -16,7 +16,7 @@ spec:
       value: ${HUGGING_TOKEN}
 
   tensorboard:
-    enabled: true  # Activer TensorBoard pour surveiller les métriques d'entraînement
+    enabled: true  ## Activer TensorBoard pour surveiller les métriques d'entraînement
 
   types:
     Master:
