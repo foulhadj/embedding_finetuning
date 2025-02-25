@@ -67,7 +67,7 @@ model.fit(
 )
 
 # Save the model to Hugging Face Hub
-REPO_NAME = "finetuned_arctic_aichor"
+REPO_NAME = "finetuned_arctic_aichor_3"
 model.save_to_hub(
     REPO_NAME,
     organization=None,
