@@ -1,11 +1,18 @@
-sentence-transformers==3.4.1
-torch==2.6.0
-transformers==4.48.2
-datasets==3.2.0
-huggingface-hub==0.28.1
-numpy==1.26.4
-pandas==2.2.2
-scikit-learn==1.6.1
-tqdm==4.67.1
-wandb==0.19.6
-xformers==0.0.29.post2
+# torch==2.6.0+cu118
+# torchvision==0.21.0+cu118
+# torchaudio==2.6.0+cu118
+# sentence-transformers==3.4.1
+# transformers==4.48.2
+# datasets==3.2.0
+# huggingface-hub==0.28.1
+# numpy==1.26.4
+# pandas==2.2.2
+# scikit-learn==1.6.1
+# tqdm==4.67.1
+# xformers==0.0.29.post2
+ sentence_transformers
+ huggingface_hub
+ torch
+ torchvision
+ torchaudio
+ nest_asyncio
