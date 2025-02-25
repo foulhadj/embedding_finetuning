@@ -17,9 +17,5 @@ COPY input_data ./input_data
 # Set environment variables
 ENV WANDB_DISABLED=true
 
-# Configure Hugging Face login (Optional - consider security implications)
-# ARG HUGGING_FACE_API_TOKEN
-# ENV HUGGING_TOKEN=${HUGGING_FACE_API_TOKEN}
-
 # Command to run the application
 CMD ["python", "finetuning.py"]
