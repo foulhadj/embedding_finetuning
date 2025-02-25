@@ -11,6 +11,10 @@ spec:
   image: huggingface-finetuning-image  # Image Docker à utiliser pour l'exécution
   command: "python3 finetuning.py"  # Exécuter votre script Python
 
+  env:
+    - name: HUGGING_TOKEN
+      value: ${HUGGING_TOKEN}
+
   tensorboard:
     enabled: true  # Activer TensorBoard pour surveiller les métriques d'entraînement
 
