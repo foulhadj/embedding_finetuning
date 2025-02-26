@@ -1,5 +1,5 @@
 # Use a Python base image
-FROM python:3.11-slim-buster
+FROM pytorch/pytorch:2.1.0-cuda11.7-cudnn8-runtime
 
 # Set the working directory inside the container
 WORKDIR /opt/app

@@ -11,6 +11,9 @@ spec:
   image: huggingface-finetuning-image
   command: "python3 finetuning.py"
 
+  # Ajouter une étape d'initialisation pour vérifier la version de torch et CUDA
+  initCommand: "python3 -c 'import torch; print(torch.__version__); print(torch.cuda.is_available())'"
+
   # env:
   #   name: HUGGING_TOKEN
   #   value: ${HUGGING_TOKEN}
