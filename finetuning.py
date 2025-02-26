@@ -40,7 +40,11 @@ examples = [
     for query_id, query in queries.items()
 ]
 
-loader = DataLoader(examples, batch_size=BATCH_SIZE, drop_last=True)
+def collate_fn(batch):
+    """Transforme une liste d'InputExample en un format utilisable"""
+    return {"texts": [example.texts for example in batch]}  # Liste de paires (query, document)
+
+loader = DataLoader(examples, batch_size=BATCH_SIZE, drop_last=True, collate_fn=collate_fn)
 
 # Load validation dataset
 with open("input_data/val_dataset.jsonl", "r") as f:
