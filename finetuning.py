@@ -41,8 +41,10 @@ examples = [
 ]
 
 def collate_fn(batch):
-    """Transforme une liste d'InputExample en un format utilisable"""
-    return {"texts": [example.texts for example in batch]}  # Liste de paires (query, document)
+    """Transforme une liste d'InputExample en un format utilisable et déplace les données sur le bon device"""
+    texts = [example.texts for example in batch]  # Liste de paires (query, document)
+    # Déplacer les inputs vers le device ici
+    return {"texts": [t.to(device) if isinstance(t, torch.Tensor) else t for t in texts]}
 
 loader = DataLoader(examples, batch_size=BATCH_SIZE, drop_last=True, collate_fn=collate_fn)
 
