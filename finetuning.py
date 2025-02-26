@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 
 ## Configuration
 nest_asyncio.apply()
-login(token=os.getenv('HUGGING_TOKEN'), add_to_git_credential=True)
+login(token=os.getenv('HUGGING_TOKEN'), add_to_git_credential=False)
 os.environ["WANDB_DISABLED"] = "true"
 
 BATCH_SIZE = 20
