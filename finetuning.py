@@ -64,6 +64,9 @@ evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_
 
 # Training configuration
 warmup_steps = int(len(loader) * EPOCHS * 0.1)
+
+torch.cuda.set_device(device)
+
 model.fit(
     train_objectives=[(loader, train_loss)],
     epochs=EPOCHS,
