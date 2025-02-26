@@ -16,6 +16,7 @@ COPY input_data ./input_data
 
 # Set environment variables
 ENV WANDB_DISABLED=true
+ENV DNS_SERVER 8.8.8.8 8.8.4.4
 
 CMD ["python", "finetuning.py", "--report_to", "none"]
 
