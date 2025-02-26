@@ -16,3 +16,4 @@
  torchvision
  torchaudio
  nest_asyncio
+ xformers
