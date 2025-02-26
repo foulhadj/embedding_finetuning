@@ -1,22 +1,28 @@
-# Utiliser l'image de base compatible CUDA (NVIDIA A100 et autres GPU)
-FROM nvidia/cuda:12.4.0-cudnn8-runtime-ubuntu20.04
-
-# Installer les dépendances de base (Python, pip, etc.)
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    git \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Installer les bibliothèques nécessaires via pip
-RUN pip3 install sentence_transformers huggingface_hub torch torchvision torchaudio nest_asyncio xformers datasets
-
-# Copier ton code dans l'image Docker
-COPY . /app
+# Utiliser l'image de base PyTorch avec CUDA 11.6
+FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 
 # Définir le répertoire de travail
-WORKDIR /app
+WORKDIR /opt/app
 
-# Commande par défaut pour démarrer l'application
-CMD ["python3", "finetuning.py"]
+# Créer un répertoire pour le code source et y copier les fichiers
+RUN mkdir -p /opt/app/src
+
+# Copier le fichier requirements.txt dans l'image Docker
+COPY requirements.txt .
+
+# Mettre à jour pip et installer les dépendances
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copier les fichiers de l'application dans l'image Docker
+COPY finetuning.py .
+COPY input_data ./input_data
+
+# Définir la variable d'environnement WANDB_DISABLED
+ENV WANDB_DISABLED=true
+
+# Copier le code source principal (si nécessaire)
+COPY src/main.py src/
+
+# Définir la commande par défaut pour exécuter l'application
+CMD ["python", "finetuning.py", "--report_to", "none"]
