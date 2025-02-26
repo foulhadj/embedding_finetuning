@@ -1,25 +1,23 @@
-# Utiliser l'image de base PyTorch avec CUDA 11.6
+# Use a Python base image
 FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 
-# Définir le répertoire de travail
+# Set the working directory inside the container
+RUN mkdir -p /opt/app/src
 WORKDIR /opt/app
 
-# Créer un répertoire pour le code source et y copier les fichiers
-RUN mkdir -p /opt/app/src
-
-# Copier le fichier requirements.txt dans l'image Docker
+# Copy the requirements file into the container
 COPY requirements.txt .
 
-# Mettre à jour pip et installer les dépendances
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+# Update pip and install the dependencies
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copier les fichiers de l'application dans l'image Docker
+# Copy the application code into the container
 COPY finetuning.py .
 COPY input_data ./input_data
 
-# Définir la variable d'environnement WANDB_DISABLED
+# Set environment variables
 ENV WANDB_DISABLED=true
 
-# Définir la commande par défaut pour exécuter l'application
-CMD ["python", "finetuning.py", "--report_to", "none"]
+# Command to run the application
+CMD ["python", "finetuning.py"]

@@ -1,8 +1,7 @@
 sentence-transformers
 huggingface_hub
-torch==1.13.1
-torchvision
-torchaudio
+torchvision==0.14.1
+torchaudio==0.13.1
 nest_asyncio
-xformers
+xformers==0.0.16  # Version spécifique de xformers compatible avec torch 1.13.1 et CUDA 11.6
 datasets
