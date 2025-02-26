@@ -11,11 +11,6 @@ spec:
   image: huggingface-finetuning-image
   command: "python3 finetuning.py"
 
-
-  # env:
-  #   name: HUGGING_TOKEN
-  #   value: ${HUGGING_TOKEN}
-
   tensorboard:
     enabled: true
 
