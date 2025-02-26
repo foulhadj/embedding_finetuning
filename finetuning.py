@@ -6,6 +6,9 @@ from sentence_transformers import SentenceTransformer, InputExample
 from sentence_transformers.losses import MatryoshkaLoss, MultipleNegativesRankingLoss
 from sentence_transformers.evaluation import InformationRetrievalEvaluator
 from torch.utils.data import DataLoader
+import torch
+
+
 
 ## Configuration
 nest_asyncio.apply()
@@ -18,6 +21,9 @@ EPOCHS = 5
 # Load model from the hub
 MODEL_ID = "Snowflake/snowflake-arctic-embed-m-v2.0"
 model = SentenceTransformer(MODEL_ID, trust_remote_code=True)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu") #
+print(f"Using device: {device}")  #
+model = model.to(device)  #
 
 # Load training dataset
 with open("input_data/training_dataset.jsonl", "r") as f:
@@ -51,6 +57,8 @@ train_loss = MatryoshkaLoss(
     matryoshka_dims=matryoshka_dimensions,
 )
 
+train_loss = train_loss.to(device) #
+
 # Define evaluator
 evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs)
 
@@ -64,6 +72,7 @@ model.fit(
     show_progress_bar=True,
     evaluator=evaluator,
     evaluation_steps=50,
+    device=device, #
 )
 
 # Save the model to Hugging Face Hub
