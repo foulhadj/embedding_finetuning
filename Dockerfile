@@ -21,8 +21,5 @@ COPY input_data ./input_data
 # Définir la variable d'environnement WANDB_DISABLED
 ENV WANDB_DISABLED=true
 
-# Copier le code source principal (si nécessaire)
-COPY src/main.py src/
-
 # Définir la commande par défaut pour exécuter l'application
 CMD ["python", "finetuning.py", "--report_to", "none"]
