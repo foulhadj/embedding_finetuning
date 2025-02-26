@@ -8,7 +8,8 @@ from sentence_transformers.evaluation import InformationRetrievalEvaluator
 from torch.utils.data import DataLoader
 import torch
 
-
+import warnings
+warnings.filterwarnings("ignore", message="Using the `WANDB_DISABLED` environment variable is deprecated")
 
 ## Configuration
 nest_asyncio.apply()
@@ -34,11 +35,11 @@ queries = train_dataset['questions']
 relevant_docs = train_dataset['relevant_contexts']
 
 examples = [
-    InputExample(texts=[query, corpus[relevant_docs[query_id][0]]])
+    InputExample(texts=[query, corpus[relevant_docs[query_id][0]]]).to(device)
     for query_id, query in queries.items()
 ]
 
-loader = DataLoader(examples, batch_size=BATCH_SIZE)
+loader = DataLoader(examples, batch_size=BATCH_SIZE, drop_last=True)  #
 
 # Load validation dataset
 with open("input_data/val_dataset.jsonl", "r") as f:
@@ -50,17 +51,16 @@ val_relevant_docs = val_dataset['relevant_contexts']
 
 # Define loss function
 matryoshka_dimensions = [768, 512, 256, 128, 64]
-inner_train_loss = MultipleNegativesRankingLoss(model)
+inner_train_loss = MultipleNegativesRankingLoss(model).to(device) #
 train_loss = MatryoshkaLoss(
     model,
     inner_train_loss,
     matryoshka_dims=matryoshka_dimensions,
-)
+).to(device) #
 
-train_loss = train_loss.to(device) #
 
 # Define evaluator
-evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs)
+evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs).to(device)
 
 # Training configuration
 warmup_steps = int(len(loader) * EPOCHS * 0.1)

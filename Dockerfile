@@ -18,4 +18,4 @@ COPY input_data ./input_data
 ENV WANDB_DISABLED=true
 
 # Command to run the application
-CMD ["python", "finetuning.py"]
+CMD ["python", "finetuning.py", "--report_to", "none"]
