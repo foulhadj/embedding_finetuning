@@ -65,6 +65,11 @@ train_loss = MatryoshkaLoss(
     matryoshka_dims=matryoshka_dimensions,
 ).to(device)
 
+#train_loss = train_loss.to("cpu")
+
+print(f"Model device: {next(model.parameters()).device}")
+print(f"Loss device: {next(train_loss.parameters()).device}")
+
 # Define evaluator
 evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs)
 
@@ -80,7 +85,7 @@ model.fit(
     show_progress_bar=True,
     evaluator=evaluator,
     evaluation_steps=50,
-    use_amp=True,  # mixed precision pour éviter certains conflits
+    #use_amp=True,  # mixed precision pour éviter certains conflits
 )
 
 # Save the model to Hugging Face Hub
