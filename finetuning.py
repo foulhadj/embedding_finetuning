@@ -72,7 +72,6 @@ model.fit(
     show_progress_bar=True,
     evaluator=evaluator,
     evaluation_steps=50,
-    device=device, #
 )
 
 # Save the model to Hugging Face Hub
