@@ -6,3 +6,4 @@ torchaudio==0.13.1
 nest_asyncio==1.5.4
 xformers==0.0.16
 datasets==2.8.0
+tensorboardX==2.5.1
