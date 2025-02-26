@@ -11,6 +11,10 @@ import torch
 import warnings
 warnings.filterwarnings("ignore", message="Using the `WANDB_DISABLED` environment variable is deprecated")
 
+## Vérification du device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
 ## Configuration
 nest_asyncio.apply()
 login(token=os.getenv('HUGGING_TOKEN'), add_to_git_credential=False)
@@ -21,10 +25,7 @@ EPOCHS = 5
 
 # Load model from the hub
 MODEL_ID = "Snowflake/snowflake-arctic-embed-m-v2.0"
-model = SentenceTransformer(MODEL_ID, trust_remote_code=True)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu") #
-print(f"Using device: {device}")  #
-model = model.to(device)  #
+model = SentenceTransformer(MODEL_ID, trust_remote_code=True).to(device)
 
 # Load training dataset
 with open("input_data/training_dataset.jsonl", "r") as f:
@@ -39,7 +40,7 @@ examples = [
     for query_id, query in queries.items()
 ]
 
-loader = DataLoader(examples, batch_size=BATCH_SIZE, drop_last=True)  #
+loader = DataLoader(examples, batch_size=BATCH_SIZE, drop_last=True)
 
 # Load validation dataset
 with open("input_data/val_dataset.jsonl", "r") as f:
@@ -51,13 +52,12 @@ val_relevant_docs = val_dataset['relevant_contexts']
 
 # Define loss function
 matryoshka_dimensions = [768, 512, 256, 128, 64]
-inner_train_loss = MultipleNegativesRankingLoss(model).to(device) #
+inner_train_loss = MultipleNegativesRankingLoss(model).to(device)
 train_loss = MatryoshkaLoss(
     model,
     inner_train_loss,
     matryoshka_dims=matryoshka_dimensions,
-).to(device) #
-
+).to(device)
 
 # Define evaluator
 evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs)
@@ -65,8 +65,7 @@ evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_
 # Training configuration
 warmup_steps = int(len(loader) * EPOCHS * 0.1)
 
-torch.cuda.set_device(device)
-
+# Training
 model.fit(
     train_objectives=[(loader, train_loss)],
     epochs=EPOCHS,
@@ -75,6 +74,7 @@ model.fit(
     show_progress_bar=True,
     evaluator=evaluator,
     evaluation_steps=50,
+    use_amp=True,  # mixed precision pour éviter certains conflits
 )
 
 # Save the model to Hugging Face Hub
