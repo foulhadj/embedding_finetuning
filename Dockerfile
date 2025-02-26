@@ -8,7 +8,9 @@ COPY requirements.txt .
 
 # Install the dependencies
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir sentence-transformers==2.2.2 huggingface_hub==0.13.4
+
 
 # Copy the application code into the container
 COPY finetuning.py .
