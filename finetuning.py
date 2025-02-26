@@ -35,7 +35,7 @@ queries = train_dataset['questions']
 relevant_docs = train_dataset['relevant_contexts']
 
 examples = [
-    InputExample(texts=[query, corpus[relevant_docs[query_id][0]]]).to(device)
+    InputExample(texts=[query, corpus[relevant_docs[query_id][0]]])
     for query_id, query in queries.items()
 ]
 
