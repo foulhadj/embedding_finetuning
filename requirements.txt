@@ -10,12 +10,12 @@
 # scikit-learn==1.6.1
 # tqdm==4.67.1
 # xformers==0.0.29.post2
-sentence_transformers
-huggingface_hub
+sentence_transformers==2.2.0
+huggingface_hub==0.13.0
 torch==2.1.0+cu117
-torchvision
-torchaudio
-nest_asyncio
-xformers
-datasets
-accelerate>=0.26.0
+torchvision==0.14.0+cu117
+torchaudio==2.1.0+cu117
+nest_asyncio==1.5.4
+xformers==0.0.16
+datasets==2.12.0
+accelerate==0.26.0
