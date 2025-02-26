@@ -60,7 +60,7 @@ train_loss = MatryoshkaLoss(
 
 
 # Define evaluator
-evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs).to(device)
+evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs)
 
 # Training configuration
 warmup_steps = int(len(loader) * EPOCHS * 0.1)
