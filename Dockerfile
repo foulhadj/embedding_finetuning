@@ -1,5 +1,6 @@
 FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 
+RUN mkdir -p /opt/app/src
 WORKDIR /opt/app
 
 # Copy the requirements file into the container
@@ -12,9 +13,9 @@ RUN pip install --upgrade pip && \
 
 
 # Copy the application code into the container
-COPY finetuning.py .
-COPY manifest .
-COPY input_data ./input_data
+COPY finetuning.py /opt/app/src/
+COPY manifest /opt/app/src/
+COPY input_data /opt/app/src/input_data
 
 # Set environment variables
 ENV WANDB_DISABLED=true
