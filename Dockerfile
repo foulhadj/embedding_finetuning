@@ -1,6 +1,5 @@
 FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 
-RUN mkdir -p /opt/app/src
 WORKDIR /opt/app
 
 # Copy the requirements file into the container
@@ -14,11 +13,12 @@ RUN pip install --upgrade pip && \
 
 # Copy the application code into the container
 COPY finetuning.py .
+COPY manifest .
 COPY input_data ./input_data
 
 # Set environment variables
 ENV WANDB_DISABLED=true
-ENV DNS_SERVER 8.8.8.8 8.8.4.4
+#ENV DNS_SERVER 8.8.8.8 8.8.4.4
 
 CMD ["python", "finetuning.py", "--report_to", "none"]
 
