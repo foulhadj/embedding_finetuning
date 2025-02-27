@@ -2,17 +2,17 @@ kind: AIchorManifest
 apiVersion: 0.2.2
 
 builder:
-  image: huggingface-finetuning-image  # Nom de l'image Docker à construire
-  context: . # Contexte local (répertoire courant) #https://github.com/foulhadj/embedding_finetuning.git #https://github.com/foulhadj/embedding_finetuning.git#main # Répertoire contenant le Dockerfile, `finetuning.py` et les données
-  dockerfile: ./Dockerfile  # Chemin vers le Dockerfile
+  image: huggingface-finetuning-image
+  context: .
+  dockerfile: ./Dockerfile
 
 spec:
   operator: pytorch
-  image: huggingface-finetuning-image  # Image Docker à utiliser pour l'exécution
-  command: "python3 finetuning.py"  # Exécuter votre script Python
+  image: huggingface-finetuning-image
+  command: "python3 finetuning.py"
 
   tensorboard:
-    enabled: true  # Activer TensorBoard pour surveiller les métriques d'entraînement
+    enabled: true
 
   types:
     Master:
@@ -24,9 +24,14 @@ spec:
           gpu:
             count: 1
             type: gpu
-            product: nvidia-tesla-t4
-    # Worker:
-    #   count: 0
-    #   resources:
-    #     cpus: 1
-    #     ramRatio: 1
+            product: NVIDIA-A100-SXM4-80GB
+    Worker:
+      count: 1
+      resources:
+        cpus: 8
+        ramRatio: 4
+        accelerators:
+          gpu:
+            count: 1
+            type: gpu
+            product: NVIDIA-A100-SXM4-80GB
