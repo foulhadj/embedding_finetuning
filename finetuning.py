@@ -1,106 +1,124 @@
 import os
 import json
+import warnings
+from typing import List, Dict
+
 import nest_asyncio
+import torch
 from huggingface_hub import login
 from sentence_transformers import SentenceTransformer, InputExample
 from sentence_transformers.losses import MatryoshkaLoss, MultipleNegativesRankingLoss
 from sentence_transformers.evaluation import InformationRetrievalEvaluator
-from torch.utils.data import DataLoader, DistributedSampler
-import torch
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel
-from torch.utils.tensorboard import SummaryWriter
+from torch.utils.data import DataLoader
 
-# Configuration
-nest_asyncio.apply()
-login(token=os.getenv('HUGGING_TOKEN'), add_to_git_credential=False)
-os.environ["WANDB_DISABLED"] = "true"
+# Ignorer les avertissements spécifiques
+warnings.filterwarnings("ignore", message="Using the `WANDB_DISABLED` environment variable is deprecated")
 
+# Configuration globale
 BATCH_SIZE = 20
 EPOCHS = 5
+MODEL_ID = "Snowflake/snowflake-arctic-embed-m-v2.0"
+REPO_NAME = "finetuned_arctic_aichor_3"
 
-def main():
-    # Initialize process group
-    dist.init_process_group(backend='nccl')
-    local_rank = int(os.environ["LOCAL_RANK"])
-    torch.cuda.set_device(local_rank)
 
-    # TensorBoard writer
-    writer = SummaryWriter(os.environ.get("AICHOR_TENSORBOARD_PATH", "./runs"))
+def setup_environment():
+    """Configure l'environnement pour l'exécution."""
+    nest_asyncio.apply()
+    login(token=os.getenv('HUGGING_TOKEN'), add_to_git_credential=False)
+    os.environ["WANDB_DISABLED"] = "true"
 
-    # Load model from the hub
-    MODEL_ID = "Snowflake/snowflake-arctic-embed-m-v2.0"
-    model = SentenceTransformer(MODEL_ID, trust_remote_code=True).to(local_rank)
-    model = DistributedDataParallel(model, device_ids=[local_rank])
 
-    # Load training dataset
-    with open("input_data/training_dataset.jsonl", "r") as f:
-        train_dataset = json.load(f)
+def load_dataset(file_path: str) -> Dict:
+    """Charge un dataset à partir d'un fichier JSON."""
+    with open(file_path, "r") as f:
+        return json.load(f)
 
-    corpus = train_dataset['corpus']
-    queries = train_dataset['questions']
-    relevant_docs = train_dataset['relevant_contexts']
 
-    examples = [
+def create_input_examples(queries: Dict, corpus: Dict, relevant_docs: Dict) -> List[InputExample]:
+    """Crée une liste d'InputExample à partir des données du dataset."""
+    return [
         InputExample(texts=[query, corpus[relevant_docs[query_id][0]]])
         for query_id, query in queries.items()
     ]
 
-    # Distributed sampler
-    train_sampler = DistributedSampler(examples)
-    loader = DataLoader(examples, batch_size=BATCH_SIZE, sampler=train_sampler)
 
-    # Load validation dataset
-    with open("input_data/val_dataset.jsonl", "r") as f:
-        val_dataset = json.load(f)
+def collate_fn(batch):
+    """Transforme une liste d'InputExample en un format utilisable."""
+    texts = [example.texts for example in batch]
+    return {"texts": [t.to(device) if isinstance(t, torch.Tensor) else t for t in texts]}
 
-    val_corpus = val_dataset['corpus']
-    val_queries = val_dataset['questions']
-    val_relevant_docs = val_dataset['relevant_contexts']
 
-    # Define loss function
+def train_model(model, train_loader, val_dataset, device):
+    """Entraîne le modèle avec les données fournies."""
+    # Définir la fonction de perte
     matryoshka_dimensions = [768, 512, 256, 128, 64]
-    inner_train_loss = MultipleNegativesRankingLoss(model)
+    inner_train_loss = MultipleNegativesRankingLoss(model).to(device)
     train_loss = MatryoshkaLoss(
         model,
         inner_train_loss,
         matryoshka_dims=matryoshka_dimensions,
+    ).to(device)
+
+    # Définir l'évaluateur
+    evaluator = InformationRetrievalEvaluator(
+        val_dataset['questions'],
+        val_dataset['corpus'],
+        val_dataset['relevant_contexts']
     )
 
-    # Define evaluator
-    evaluator = InformationRetrievalEvaluator(val_queries, val_corpus, val_relevant_docs)
+    # Configuration de l'entraînement
+    warmup_steps = int(len(train_loader) * EPOCHS * 0.1)
 
-    # Training configuration
-    warmup_steps = int(len(loader) * EPOCHS * 0.1)
+    # Entraînement
+    model.fit(
+        train_objectives=[(train_loader, train_loss)],
+        epochs=EPOCHS,
+        warmup_steps=warmup_steps,
+        output_path=None,
+        show_progress_bar=True,
+        evaluator=evaluator,
+        evaluation_steps=50,
+    )
 
-    # Custom training loop
-    for epoch in range(EPOCHS):
-        train_sampler.set_epoch(epoch)
-        model.train()
-        for batch_idx, batch in enumerate(loader):
-            loss = train_loss(batch)
-            loss.backward()
-            # Add logging
-            if batch_idx % 10 == 0:
-                writer.add_scalar('train/loss', loss.item(), epoch * len(loader) + batch_idx)
-        
-        # Evaluation
-        if local_rank == 0:
-            scores = evaluator(model)
-            for metric, value in scores.items():
-                writer.add_scalar(f'eval/{metric}', value, epoch)
 
-    writer.close()
+def save_model(model):
+    """Sauvegarde le modèle sur Hugging Face Hub."""
+    model.save_to_hub(
+        REPO_NAME,
+        organization=None,
+        private=True,
+        commit_message="Modèle fine-tuné sur aichor",
+    )
 
-    # Save the model to Hugging Face Hub (only on main process)
-    if local_rank == 0:
-        REPO_NAME = "finetuned_arctic_aichor_3"
-        model.module.save_to_hub(
-            REPO_NAME,
-            organization=None,
-            private=True,
-            commit_message="Modèle fine-tuné sur aichor",
-        )
+
+def main():
+    global device
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
+    setup_environment()
+
+    # Charger le modèle
+    model = SentenceTransformer(MODEL_ID, trust_remote_code=True).to(device)
+
+    # Charger et préparer les données d'entraînement
+    train_dataset = load_dataset("input_data/training_dataset.jsonl")
+    train_examples = create_input_examples(
+        train_dataset['questions'],
+        train_dataset['corpus'],
+        train_dataset['relevant_contexts']
+    )
+    train_loader = DataLoader(train_examples, batch_size=BATCH_SIZE, drop_last=True, collate_fn=collate_fn)
+
+    # Charger les données de validation
+    val_dataset = load_dataset("input_data/val_dataset.jsonl")
+
+    # Entraîner le modèle
+    train_model(model, train_loader, val_dataset, device)
+
+    # Sauvegarder le modèle
+    save_model(model)
+
 
 if __name__ == "__main__":
     main()
