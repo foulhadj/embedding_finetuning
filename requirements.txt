@@ -1,9 +1,9 @@
 sentence-transformers==3.2.1
-huggingface_hub==0.13.4
-torch==1.13.1
-torchvision==0.14.1
-torchaudio==0.13.1
+huggingface_hub==0.16.4  # Mise à jour pour éviter les conflits avec datasets et sentence-transformers
+torch==2.0.1  # Mise à jour pour une meilleure compatibilité avec xformers et les modèles récents
+torchvision==0.15.2  # Adapté à la version de torch
+torchaudio==2.0.1  # Adapté à la version de torch
 nest_asyncio==1.5.4
-xformers==0.0.16
-datasets==2.8.0
+xformers==0.0.20  # Compatible avec torch 2.x
+datasets==2.8.0  # Compatible avec cette version de huggingface_hub
 tensorboardX==2.5.1
