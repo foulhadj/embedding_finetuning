@@ -1,5 +1,6 @@
 FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 
+
 #RUN mkdir -p /opt/app/src
 WORKDIR /opt/app
 
@@ -18,6 +19,7 @@ COPY input_data .
 
 # Set environment variables
 ENV WANDB_DISABLED=true
+ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 CMD ["python", "finetuning.py", "--report_to", "none"]
 

@@ -93,7 +93,13 @@ def save_model(model):
 
 def main():
     global device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        print(f"Number of GPUs available: {torch.cuda.device_count()}")
+    else:
+        device = torch.device("cpu")
+        print("CUDA is not available. Using CPU.")
     print(f"Using device: {device}")
 
     setup_environment()
