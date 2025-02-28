@@ -1,9 +1,9 @@
 sentence-transformers>=3.4.0
-huggingface_hub==0.13.4
-torch==1.13.1
-torchvision==0.14.1
-torchaudio==0.13.1
-nest_asyncio==1.5.4
-xformers==0.0.16
-datasets==2.8.0
-tensorboardX==2.5.1
+huggingface_hub>=0.13.4
+torch>=1.13.1
+torchvision>=0.14.1
+torchaudio>=0.13.1
+nest_asyncio
+xformers
+datasets>=2.8.0
+tensorboardX
