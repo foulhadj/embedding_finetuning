@@ -8,8 +8,7 @@ WORKDIR /opt/app
 COPY requirements.txt .
 
 # Install the dependencies
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt --constraint constraints.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 
 # Copy the application code into the container
