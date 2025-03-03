@@ -1,9 +1,9 @@
-torch==2.5.1+cu124
-torchvision==0.20.1+cu124
+torch>=2.0.0
+torchvision==0.16.0
 sentence-transformers==3.4.1
 huggingface-hub>=0.16.4
 nest-asyncio>=1.5
 datasets>=2.14.0
-xformers==0.0.29.post1
+xformers>=0.0.16
 transformers==4.48.3
 tensorboardX>=2.5.1
