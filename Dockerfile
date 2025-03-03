@@ -1,20 +1,17 @@
 FROM pytorch/pytorch:2.2.0-cuda11.8-cudnn8-runtime
 
-
-#RUN mkdir -p /opt/app/src
 WORKDIR /opt/app
 
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-# Install the dependencies
+# Install the dependencies (upgrade pip and install requirements)
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install transformers==4.30.0
 
-
 # Copy the application code into the container
-COPY finetuning.py . 
+COPY finetuning.py .
 COPY input_data .
 
 # Set environment variables
@@ -22,6 +19,7 @@ ENV WANDB_DISABLED=true
 ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 CMD ["python", "finetuning.py", "--report_to", "none"]
+
 
 # # Use a Python base image
 # FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime

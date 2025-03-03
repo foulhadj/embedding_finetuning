@@ -7,4 +7,3 @@ datasets>=2.14.0
 xformers>=0.0.16
 transformers>=4.30.0
 tensorboardX>=2.5.1
-torch_npu
