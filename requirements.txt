@@ -1,5 +1,5 @@
 torch>=2.0.0
-torchvision>=0.15.0  # Spécifie une version compatible avec torch>=2.0.0
+torchvision==0.16.0  # Spécifie une version compatible avec torch>=2.0.0
 sentence-transformers>=2.6.0
 huggingface-hub>=0.16.4
 nest-asyncio>=1.5
