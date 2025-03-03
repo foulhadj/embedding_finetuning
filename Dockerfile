@@ -10,7 +10,7 @@ COPY requirements.txt .
 # Install the dependencies
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
-    pip install transformers==4.29.0 torchvision==0.16.0
+    pip install transformers==4.30.0
 
 
 # Copy the application code into the container

@@ -1,9 +1,10 @@
 torch>=2.0.0
-torchvision==0.16.0  # Spécifie une version compatible avec torch>=2.0.0
+torchvision==0.16.0
 sentence-transformers>=2.6.0
 huggingface-hub>=0.16.4
 nest-asyncio>=1.5
 datasets>=2.14.0
 xformers>=0.0.16
-transformers==4.29.0
+transformers>=4.30.0
 tensorboardX>=2.5.1
+torch_npu
