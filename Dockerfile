@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:2.2.0-cuda11.8-cudnn8-runtime
+FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn8-runtime
 
 WORKDIR /opt/app
 
@@ -7,8 +7,7 @@ COPY requirements.txt .
 
 # Install the dependencies (upgrade pip and install requirements)
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install transformers==4.30.0
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
 COPY finetuning.py .
