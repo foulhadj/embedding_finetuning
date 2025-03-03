@@ -11,7 +11,7 @@ RUN pip install --upgrade pip && \
 
 # Copy the application code into the container
 COPY finetuning.py .
-COPY input_data .
+COPY input_data /opt/app/input_data
 
 # Set environment variables
 ENV WANDB_DISABLED=true
