@@ -11,7 +11,7 @@ from sentence_transformers.losses import MatryoshkaLoss, MultipleNegativesRankin
 from sentence_transformers.evaluation import InformationRetrievalEvaluator
 from torch.utils.data import DataLoader
 
-# Ignorer les avertissements spécifiques
+## Ignorer les avertissements spécifiques
 warnings.filterwarnings("ignore", message="Using the `WANDB_DISABLED` environment variable is deprecated")
 
 # Configuration globale
