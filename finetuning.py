@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore", message="Using the `WANDB_DISABLED` environmen
 BATCH_SIZE = 20
 EPOCHS = 5
 MODEL_ID = "Snowflake/snowflake-arctic-embed-m-v2.0"
-REPO_NAME = "finetuned_arctic_aichor_4"
+REPO_NAME = "finetuned_arctic_aichor_5"
 
 
 def setup_environment():
